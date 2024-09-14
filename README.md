@@ -10,3 +10,4 @@
 - **react helmet**
 - **react hook form**
 - **zod**
+- **sonner**

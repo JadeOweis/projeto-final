@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -24,9 +25,14 @@ export function SignIn() {
   })
 
   async function handleSignIn(data: SignInForm) {
-    console.log(data)
+    try {
+      console.log(data)
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      toast.success('Login efetuado com sucesso')
+    } catch {
+      toast.error('Houve um problema inesperado com seu login')
+    }
   }
 
   return (
@@ -75,7 +81,7 @@ export function SignIn() {
           <div className="space-y-1 md:space-y-4">
             <Label
               htmlFor="password"
-              className={errors.email && 'text-destructive'}
+              className={errors.password && 'text-destructive'}
             >
               Sua senha
             </Label>
@@ -84,7 +90,7 @@ export function SignIn() {
               type="password"
               {...register('password')}
               className={
-                errors.email
+                errors.password
                   ? 'border-destructive focus-visible:ring-destructive'
                   : ''
               }
