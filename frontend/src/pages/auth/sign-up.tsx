@@ -9,28 +9,29 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-const signInForm = z.object({
+const signUpForm = z.object({
   email: z.string().min(1, 'Campo obrigatório').email('E-mail inválido'),
+  name: z.string().min(10, 'digite pelo menos 10 letras'),
   password: z.string().min(1, 'Campo obrigatório'),
 })
 
-type SignInForm = z.infer<typeof signInForm>
+type SignUpForm = z.infer<typeof signUpForm>
 
-export function SignIn() {
+export function SignUp() {
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useForm<SignInForm>({
-    resolver: zodResolver(signInForm),
+  } = useForm<SignUpForm>({
+    resolver: zodResolver(signUpForm),
   })
 
-  async function handleSignIn(data: SignInForm) {
+  async function handleSignUp(data: SignUpForm) {
     try {
       console.log(data)
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
-      toast.success('Login efetuado com sucesso')
+      toast.success('Cadastro efetuado com sucesso')
     } catch {
       toast.error('Houve um problema inesperado com seu login')
     }
@@ -38,22 +39,22 @@ export function SignIn() {
 
   return (
     <>
-      <Helmet title="LogIn" />
+      <Helmet title="Cadastro" />
       <section className="flex w-full max-w-md flex-col items-center justify-center gap-6 px-4 py-20">
         <article className="flex w-full flex-col justify-center gap-6">
           <div className="flex flex-col text-center md:gap-2">
             <h1 className="text-xl font-semibold tracking-tighter md:text-2xl">
-              Acessar painel
+              Criar conta grátis{' '}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Acompanhe seu plano de dieta pelo painel
+              Comece a Registrar seu plano de dieta pelo painel
             </p>
           </div>
         </article>
 
         <form
           className="flex w-full flex-col gap-4"
-          onSubmit={handleSubmit(handleSignIn)}
+          onSubmit={handleSubmit(handleSignUp)}
         >
           <div className="space-y-1 md:space-y-4">
             <Label
@@ -75,6 +76,27 @@ export function SignIn() {
             {errors.email && (
               <span className="px-2 text-sm text-destructive">
                 {errors.email?.message}
+              </span>
+            )}
+          </div>
+
+          <div className="space-y-1 md:space-y-4">
+            <Label htmlFor="name" className={errors.name && 'text-destructive'}>
+              Seu nome
+            </Label>
+            <Input
+              id="name"
+              type="name"
+              {...register('name')}
+              className={
+                errors.name
+                  ? 'border-destructive focus-visible:ring-destructive'
+                  : ''
+              }
+            />
+            {errors.name && (
+              <span className="px-2 text-sm text-destructive">
+                {errors.name?.message}
               </span>
             )}
           </div>
@@ -104,13 +126,13 @@ export function SignIn() {
           </div>
 
           <Button type="submit" disabled={isSubmitting}>
-            Acessar painel
+            Começar a registrar dieta
           </Button>
         </form>
         <span className="w-full text-center text-sm text-muted-foreground">
-          Não tem uma conta?{' '}
-          <Link to="/sign-up" className="text-primary hover:underline">
-            Criar uma
+          Já tenho uma conta.{' '}
+          <Link to="/sign-in" className="text-primary hover:underline">
+            Acessar
           </Link>
         </span>
       </section>
