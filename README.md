@@ -7,3 +7,4 @@
 - **tailwindcss**
 - **shadcn/ui**
 - **react-router-dom**
+- **react helmet**
