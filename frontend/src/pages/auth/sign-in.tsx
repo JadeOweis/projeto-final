@@ -1,14 +1,38 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Helmet } from 'react-helmet-async'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
+const signInForm = z.object({
+  email: z.string().min(1, 'Campo obrigatório').email('E-mail inválido'),
+  password: z.string().min(1, 'Campo obrigatório'),
+})
+
+type SignInForm = z.infer<typeof signInForm>
+
 export function SignIn() {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+  } = useForm<SignInForm>({
+    resolver: zodResolver(signInForm),
+  })
+
+  async function handleSignIn(data: SignInForm) {
+    console.log(data)
+
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+  }
+
   return (
     <>
       <Helmet title="LogIn" />
-      <section className="w-full max-w-md p-4 md:p-8">
+      <section className="w-full max-w-md space-y-8 px-4 py-20">
         <article className="flex w-full flex-col justify-center gap-6">
           <div className="flex flex-col text-center md:gap-2">
             <h1 className="text-xl font-semibold tracking-tighter md:text-2xl">
@@ -20,18 +44,61 @@ export function SignIn() {
           </div>
         </article>
 
-        <form className="flex flex-col gap-2 md:gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Seu e-mail</Label>
-            <Input id="email" type="email" />
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={handleSubmit(handleSignIn)}
+        >
+          <div className="space-y-1 md:space-y-4">
+            <Label
+              htmlFor="email"
+              className={errors.email && 'text-destructive'}
+            >
+              Seu e-mail
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              {...register('email')}
+              className={
+                errors.email
+                  ? 'border-destructive focus-visible:ring-destructive'
+                  : ''
+              }
+            />
+            {errors.email && (
+              <span className="px-2 text-sm text-destructive">
+                {errors.email?.message}
+              </span>
+            )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Sua senha</Label>
-            <Input id="password" type="password" />
+          <div className="space-y-1 md:space-y-4">
+            <Label
+              htmlFor="password"
+              className={errors.email && 'text-destructive'}
+            >
+              Sua senha
+            </Label>
+            <Input
+              id="password"
+              type="password"
+              {...register('password')}
+              className={
+                errors.email
+                  ? 'border-destructive focus-visible:ring-destructive'
+                  : ''
+              }
+            />
+            {errors.password && (
+              <span className="px-2 text-sm text-destructive">
+                {errors.password?.message}
+              </span>
+            )}
           </div>
 
-          <Button type="submit">Acessar painel</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            Acessar painel
+          </Button>
         </form>
       </section>
     </>

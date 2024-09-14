@@ -8,3 +8,5 @@
 - **shadcn/ui**
 - **react-router-dom**
 - **react helmet**
+- **react hook form**
+- **zod**
