@@ -4,7 +4,7 @@ export function Home() {
   return (
     <>
       <Helmet title="Home" />
-      <h1>SignIn</h1>
+      <h1>Home</h1>
     </>
   )
 }
