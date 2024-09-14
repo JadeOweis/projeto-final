@@ -1,4 +1,8 @@
 # projeto-final
 
 ## frontend
- - **eslint**
+- **TypeScript**
+- **ESLint**
+- **prettier**
+- **tailwindcss**
+- **shadcn/ui**
