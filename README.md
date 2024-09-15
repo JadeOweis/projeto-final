@@ -11,3 +11,6 @@
 - **react hook form**
 - **zod**
 - **sonner**
+
+## backend
+- **TypeScript**
