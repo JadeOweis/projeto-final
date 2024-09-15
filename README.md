@@ -16,3 +16,6 @@
 - **TypeScript** 
 - **ESLint**
 - **Fastify**
+- **zod**
+- **dotenv**
+
