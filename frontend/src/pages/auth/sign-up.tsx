@@ -9,11 +9,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-const signUpForm = z.object({
-  email: z.string().min(1, 'Campo obrigatório').email('E-mail inválido'),
-  name: z.string().min(10, 'digite pelo menos 10 letras'),
-  password: z.string().min(1, 'Campo obrigatório'),
-})
+const signUpForm = z
+  .object({
+    email: z.string().min(1, 'Campo obrigatório').email('E-mail inválido'),
+    name: z.string().min(10, 'O nome deve ter pelo menos 4 caracteres'),
+    password: z.string().min(8, 'A senha deve ter pelo menos 8 caracteres'),
+    confirmPassword: z
+      .string()
+      .min(8, 'A confirmação da senha deve ter pelo menos 8 caracteres'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'As senhas não correspondem',
+    path: ['confirmPassword'],
+  })
 
 type SignUpForm = z.infer<typeof signUpForm>
 
@@ -121,6 +129,30 @@ export function SignUp() {
             {errors.password && (
               <span className="px-2 text-sm text-destructive">
                 {errors.password?.message}
+              </span>
+            )}
+          </div>
+
+          <div className="space-y-1 md:space-y-4">
+            <Label
+              htmlFor="confirmPassword"
+              className={errors.confirmPassword && 'text-destructive'}
+            >
+              Confirme sua senha
+            </Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              {...register('confirmPassword')}
+              className={
+                errors.confirmPassword
+                  ? 'border-destructive focus-visible:ring-destructive'
+                  : ''
+              }
+            />
+            {errors.confirmPassword && (
+              <span className="px-2 text-sm text-destructive">
+                {errors.confirmPassword?.message}
               </span>
             )}
           </div>
