@@ -13,4 +13,6 @@
 - **sonner**
 
 ## backend
-- **TypeScript**
+- **TypeScript** 
+- **ESLint**
+- **Fastify**
