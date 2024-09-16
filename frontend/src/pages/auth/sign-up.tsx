@@ -1,10 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { signUp } from '@/api/sign-up'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,7 +15,7 @@ import { Label } from '@/components/ui/label'
 const signUpForm = z
   .object({
     email: z.string().min(1, 'Campo obrigatório').email('E-mail inválido'),
-    name: z.string().min(10, 'O nome deve ter pelo menos 4 caracteres'),
+    name: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres'),
     password: z.string().min(8, 'A senha deve ter pelo menos 8 caracteres'),
     confirmPassword: z
       .string()
@@ -34,15 +37,22 @@ export function SignUp() {
     resolver: zodResolver(signUpForm),
   })
 
-  async function handleSignUp(data: SignUpForm) {
-    try {
-      console.log(data)
-
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+  const { mutateAsync: registerUser } = useMutation({
+    mutationFn: signUp,
+    onSuccess: () => {
       toast.success('Cadastro efetuado com sucesso')
-    } catch {
-      toast.error('Houve um problema inesperado com seu login')
-    }
+    },
+    onError: (error: AxiosError) => {
+      if (error.response && error.response.status === 500) {
+        toast.error('Já existe um usuário com esse e-mail')
+      } else {
+        toast.error('Houve um problema inesperado com seu cadastro')
+      }
+    },
+  })
+
+  async function handleSignUp({ name, email, password }: SignUpForm) {
+    await registerUser({ name, email, password })
   }
 
   return (
