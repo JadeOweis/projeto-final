@@ -32,7 +32,7 @@
 
 ## RNFs (Requisitos não-funcionais)
 
-- [] A senha do usuário precisa estar criptografada;
+- [x] A senha do usuário precisa estar criptografada;
 
 
 
