@@ -1,9 +1,18 @@
-import { app } from './app'
-import { env } from './env'
+import cors from '@fastify/cors'
+import fastify from 'fastify'
 
-app.get('/hello', () => {
-  return 'Hello World!'
+import { env } from './env'
+import { usersRoutes } from './routes/users'
+
+const app = fastify()
+
+app.register(cors, {
+  origin: env.CLIENT_ORIGIN,
+  methods: ['POST'],
+  credentials: true,
 })
+
+app.register(usersRoutes)
 
 app
   .listen({
