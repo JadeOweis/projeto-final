@@ -1,3 +1,4 @@
+import cookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import { fastifyJwt } from '@fastify/jwt'
 import fastify from 'fastify'
@@ -15,6 +16,7 @@ app.register(cors, {
   credentials: true,
 })
 
+app.register(cookie)
 app.register(usersRoutes, { prefix: 'users' })
 
 app

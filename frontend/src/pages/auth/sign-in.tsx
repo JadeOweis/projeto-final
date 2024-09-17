@@ -1,10 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { signIn } from '@/api/sign-in'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,6 +20,7 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>
 
 export function SignIn() {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -25,15 +29,25 @@ export function SignIn() {
     resolver: zodResolver(signInForm),
   })
 
-  async function handleSignIn(data: SignInForm) {
-    try {
-      console.log(data)
-
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn,
+    onSuccess: () => {
       toast.success('Login efetuado com sucesso')
-    } catch {
-      toast.error('Houve um problema inesperado com seu login')
-    }
+      navigate('/')
+    },
+    onError: (error: AxiosError) => {
+      if (error.response && error.response.status === 404) {
+        toast.error('E-mail não encontrado')
+      } else if (error.response && error.response.status === 401) {
+        toast.error('Credenciais inválidas')
+      } else {
+        toast.error('Houve um problema inesperado com seu cadastro')
+      }
+    },
+  })
+
+  async function handleSignIn({ email, password }: SignInForm) {
+    await authenticate({ email, password })
   }
 
   return (
