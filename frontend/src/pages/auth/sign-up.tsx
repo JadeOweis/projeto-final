@@ -34,6 +34,7 @@ export function SignUp() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { isSubmitting, errors },
   } = useForm<SignUpForm>({
     resolver: zodResolver(signUpForm),
@@ -42,6 +43,7 @@ export function SignUp() {
   const { mutateAsync: registerUser } = useMutation({
     mutationFn: signUp,
     onSuccess: () => {
+      reset
       toast.success('Cadastro realizado com sucesso!',{
         action: {
           label: 'Login',
