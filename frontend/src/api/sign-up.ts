@@ -7,5 +7,5 @@ export interface SignUpBody {
 }
 
 export async function signUp({ name, email, password }: SignUpBody) {
-  await api.post('/users', { name, email, password })
+  await api.post('/users/register', { name, email, password })
 }

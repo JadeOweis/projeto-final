@@ -43,7 +43,7 @@ export function SignUp() {
       toast.success('Cadastro efetuado com sucesso')
     },
     onError: (error: AxiosError) => {
-      if (error.response && error.response.status === 500) {
+      if (error.response && error.response.status === 409) {
         toast.error('Já existe um usuário com esse e-mail')
       } else {
         toast.error('Houve um problema inesperado com seu cadastro')

@@ -12,7 +12,7 @@ app.register(cors, {
   credentials: true,
 })
 
-app.register(usersRoutes)
+app.register(usersRoutes, { prefix: 'users' })
 
 app
   .listen({
