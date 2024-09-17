@@ -56,7 +56,22 @@ export async function usersRoutes(app: FastifyInstance) {
 
       if (!doesPasswordMatches) return reply.status(401).send()
 
-      return reply.status(201).send()
+      const token = await reply.jwtSign(
+        {},
+        { sign: { sub: user.id, expiresIn: '1h' } },
+      )
+
+      return reply.status(200).send({ token })
     },
   )
+
+  app.get('/me', async (request: FastifyRequest, reply: FastifyReply) => {
+    await request.jwtVerify()
+
+    const user = await prisma.user.findUnique({
+      where: { id: request.user.sub },
+      select: { id: true, name: true, email: true },
+    })
+    return reply.status(200).send({ user })
+  })
 }
