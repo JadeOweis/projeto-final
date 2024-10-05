@@ -24,15 +24,21 @@ export async function usersRoutes(app: FastifyInstance) {
 
       if (userWithSameEmail) return reply.status(409).send()
 
-      await prisma.user.create({
-        data: {
-          name,
-          email,
-          password_hash,
-        },
-      })
-
-      return reply.status(201).send()
+      try {
+        await prisma.user.create({
+          data: {
+            name,
+            email,
+            password_hash,
+          },
+        })
+        return reply.status(201).send()
+      } catch (err) {
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Could not create user. Please try again later.',
+        })
+      }
     },
   )
 
@@ -66,12 +72,33 @@ export async function usersRoutes(app: FastifyInstance) {
   )
 
   app.get('/me', async (request: FastifyRequest, reply: FastifyReply) => {
-    await request.jwtVerify()
+    try {
+      await request.jwtVerify()
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        return reply.status(401).send({
+          error: 'Token expired',
+          message: 'Your token has expired. Please login again.',
+        })
+      }
+      return reply.status(401).send({
+        error: 'Unauthorized',
+        message: 'Invalid token',
+      })
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: request.user.sub },
       select: { id: true, name: true, email: true },
     })
+
+    if (!user) {
+      return reply.status(404).send({
+        error: 'User not found',
+        message: 'No user found with the provided token.',
+      })
+    }
+
     return reply.status(200).send({ user })
   })
 }
