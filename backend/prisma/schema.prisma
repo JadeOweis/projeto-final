@@ -19,6 +19,25 @@ model User {
   email         String   @unique
   password_hash String
   created_at    DateTime @default(now())
+  meals         Meal[]
 
   @@map("users")
+}
+
+model Meal {
+  id         String   @id @default(uuid())
+  title      String
+  amount     Float
+  meal_type  MealType
+  created_at DateTime @default(now())
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  @@map("meals")
+}
+
+enum MealType {
+  healthy
+  unhealthy
 }
