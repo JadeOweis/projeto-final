@@ -5,17 +5,20 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { RouterProvider } from 'react-router-dom'
 import { Toaster } from 'sonner'
 
+import { ThemeProvider } from './components/theme/theme-provider'
 import { queryClient } from './lib/react-query'
 import { router } from './routes'
 
 export function App() {
   return (
     <HelmetProvider>
-      <Helmet titleTemplate="%s | diet.plan 🥕" />
-      <Toaster position="top-right" richColors />
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router}></RouterProvider>
-      </QueryClientProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <Helmet titleTemplate="%s | diet.plan 🥕" />
+        <Toaster position="top-right" richColors />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ThemeProvider>
     </HelmetProvider>
   )
 }
