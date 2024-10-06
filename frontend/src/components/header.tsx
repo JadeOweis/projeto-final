@@ -2,8 +2,10 @@ import { Carrot } from '@phosphor-icons/react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
+import { NewMealModal } from './new-meal-modal'
 import { ModeToggle } from './theme/mode-toggle'
 import { Button } from './ui/button'
+import { Dialog, DialogTrigger } from './ui/dialog'
 
 export function Header() {
   const navigate = useNavigate()
@@ -23,10 +25,17 @@ export function Header() {
           aria-label="Logo da Marca"
         />
 
-        <div className="ml-auto flex items-center justify-center gap-2 md:gap-4">
+        <div className="ml-auto flex items-center justify-center gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Registrar Refeição</Button>
+            </DialogTrigger>
+            <NewMealModal />
+          </Dialog>
           <ModeToggle />
-
-          <Button onClick={handleSignOut}>Sair</Button>
+          <Button onClick={handleSignOut} variant={'secondary'}>
+            Sair
+          </Button>
         </div>
       </nav>
     </header>

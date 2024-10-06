@@ -22,13 +22,13 @@ export function MealsTable() {
 
   return (
     <Table>
-      <TableCaption>Uma lista de suas refeições recentes</TableCaption>
+      <TableCaption>Lista de suas refeições recentes</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="md:w-1/2">Título</TableHead>
-          <TableHead>Quantidade de calorias</TableHead>
+          <TableHead className="md:w-1/3">Título</TableHead>
+          <TableHead>Calorias</TableHead>
+          <TableHead>Categoria</TableHead>
           <TableHead>Data</TableHead>
-          <TableHead>Tipo</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -48,12 +48,6 @@ export function MealsTable() {
                 >
                   {meal.amount}
                 </TableCell>
-                <TableCell>
-                  {formatDistanceToNow(meal.created_at, {
-                    locale: ptBR,
-                    addSuffix: true,
-                  })}
-                </TableCell>
                 <TableCell
                   className={
                     meal.meal_type === 'healthy'
@@ -61,7 +55,13 @@ export function MealsTable() {
                       : 'text-destructive'
                   }
                 >
-                  {meal.meal_type}
+                  {meal.meal_type === 'healthy' ? 'Saudável' : 'Não Saudável'}
+                </TableCell>
+                <TableCell>
+                  {formatDistanceToNow(meal.created_at, {
+                    locale: ptBR,
+                    addSuffix: true,
+                  })}
                 </TableCell>
               </TableRow>
             )
