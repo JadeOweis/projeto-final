@@ -1,9 +1,14 @@
+import { MagnifyingGlass } from '@phosphor-icons/react'
+import { Dialog, DialogTrigger } from '@radix-ui/react-dialog'
 import { useQuery } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { useState } from 'react'
 
 import { getMeals } from '@/api/get-meals'
 
+import { MealDetails } from './meal-details'
+import { Button } from './ui/button'
 import {
   Table,
   TableBody,
@@ -15,6 +20,8 @@ import {
 } from './ui/table'
 
 export function MealsTable() {
+  const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false)
+
   const { data: result } = useQuery({
     queryKey: ['meals'],
     queryFn: getMeals,
@@ -29,6 +36,7 @@ export function MealsTable() {
           <TableHead>Calorias</TableHead>
           <TableHead>Categoria</TableHead>
           <TableHead>Data</TableHead>
+          <TableHead className="text-right">Ações</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -46,7 +54,7 @@ export function MealsTable() {
                       : 'text-destructive'
                   }
                 >
-                  {meal.amount}
+                  {meal.amount} kcal
                 </TableCell>
                 <TableCell
                   className={
@@ -62,6 +70,22 @@ export function MealsTable() {
                     locale: ptBR,
                     addSuffix: true,
                   })}
+                </TableCell>
+                <TableCell className="flex items-center justify-end gap-2 font-medium">
+                  <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        size={'sm'}
+                        className="lg:flex lg:items-center lg:justify-center lg:gap-1"
+                      >
+                        <MagnifyingGlass className="h-3 w-3 md:h-4 md:w-4" />
+                        <span className="hidden lg:flex">Detalhes</span>
+                      </Button>
+                    </DialogTrigger>
+
+                    <MealDetails mealId={meal.id} open={isDetailsOpen} />
+                  </Dialog>
                 </TableCell>
               </TableRow>
             )

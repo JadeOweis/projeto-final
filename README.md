@@ -29,7 +29,7 @@
 - [x] Deve ser possível obter o perfil de um usuário logado;
 - [x] O usuário deve poder criar uma nova refeição;
 - [x] O usuário deve poder listar todas as refeições que já cadastrou;
-- [ ] O usuário deve poder visualizar uma refeição única;
+- [x] O usuário deve poder visualizar uma refeição única;
 - [ ] O usuário deve poder editar uma refeição já cadastrada por ele;
 - [ ] O usuário deve poder obter um resumo da sua dieta;
 - [ ] O usuário deve poder excluir do resumo uma refeição já cadastrada por ele;
