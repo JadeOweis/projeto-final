@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { env } from '@/env'
@@ -34,9 +33,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token')
-      const navigate = useNavigate()
 
-      navigate('/sign-in', { replace: true })
+      window.location.href = '/sign-in'
       toast.info('Você foi deslogado por inatividade')
     }
     return Promise.reject(error)

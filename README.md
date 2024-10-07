@@ -40,7 +40,7 @@
 ## RNs (Regras de negócio)
 
 - [x] O usuário não deve poder se cadastrar com um e-mail duplicado;
-- [ ] O usuário só pode ver as refeições que ele mesmo cadastrou;
+- [x] O usuário só pode ver as refeições que ele mesmo cadastrou;
 - [ ] O usuário só pode editar ou excluir as refeições que ele mesmo cadastrou;
 - [ ] O sistema deve calcular automaticamente a quantidade de refeições saudáveis e não saudáveis para o resumo;
 - [ ] A busca por refeições deve considerar apenas as refeições do usuário logado;
