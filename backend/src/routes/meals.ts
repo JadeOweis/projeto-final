@@ -46,7 +46,16 @@ export async function mealsRoutes(app: FastifyInstance) {
       where: { user_id: request.user.sub },
     })
 
-    return { meals }
+    const summary = {
+      healthy: meals
+        .filter((meal) => meal.meal_type === 'healthy')
+        .reduce((acc, meal) => acc + meal.amount, 0),
+      unhealthy: meals
+        .filter((meal) => meal.meal_type === 'unhealthy')
+        .reduce((acc, meal) => acc + meal.amount, 0),
+    }
+
+    return { meals, summary }
   })
 
   app.get('/:id', async (request: FastifyRequest, reply: FastifyReply) => {

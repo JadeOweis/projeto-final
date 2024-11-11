@@ -9,6 +9,10 @@ export interface GetMealsResponse {
     created_at: string
     user_id: string
   }[]
+  summary: {
+    healthy: number
+    unhealthy: number
+  }
 }
 
 export async function getMeals(): Promise<GetMealsResponse> {
