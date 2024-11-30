@@ -12,6 +12,7 @@ export interface GetMealDetailsResponse {
     meal_type: 'unhealthy' | 'healthy'
     created_at: string
     created_by: string
+    isExcludedFromBalance: boolean
   }
 }
 

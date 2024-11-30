@@ -41,7 +41,9 @@ export function SignIn() {
       } else if (error.response?.status === 401) {
         toast.error('Credenciais inválidas')
       } else {
-        toast.error('Ocorreu um problema inesperado. Tente novamente mais tarde.')
+        toast.error(
+          'Ocorreu um problema inesperado. Tente novamente mais tarde.',
+        )
       }
     },
   })
@@ -113,7 +115,10 @@ export function SignIn() {
               aria-describedby={errors.password ? 'password-error' : undefined}
             />
             {errors.password && (
-              <span id="password-error" className="px-2 text-sm text-destructive">
+              <span
+                id="password-error"
+                className="px-2 text-sm text-destructive"
+              >
                 {errors.password.message}
               </span>
             )}

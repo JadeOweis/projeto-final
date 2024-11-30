@@ -1,8 +1,4 @@
-import {
-  ArrowCircleDown,
-  ArrowCircleUp,
-  CurrencyDollar,
-} from '@phosphor-icons/react'
+import { ArrowCircleDown, ArrowCircleUp } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
 import colors from 'tailwindcss/colors'
@@ -46,7 +42,9 @@ export function Summary() {
               <ArrowCircleUp className="h-8 w-8 fill-emerald-600" />
             </CardDescription>
           </CardHeader>
-          <CardContent>{result?.summary.healthy} kcal</CardContent>
+          <CardContent className="text-5xl">
+            {result?.summary.healthy} <span className="text-sm">kcal</span>
+          </CardContent>
         </Card>
 
         <Card className="flex flex-col justify-between gap-2">
@@ -56,7 +54,9 @@ export function Summary() {
               <ArrowCircleDown className="h-8 w-8 fill-destructive" />
             </CardDescription>
           </CardHeader>
-          <CardContent>{result?.summary.unhealthy} kcal</CardContent>
+          <CardContent className="text-5xl">
+            {result?.summary.unhealthy} <span className="text-sm">kcal</span>
+          </CardContent>
         </Card>
 
         <Card className="flex flex-col justify-between gap-2">
@@ -101,7 +101,10 @@ export function Summary() {
                     <ArrowCircleUp className="h-8 w-8 fill-emerald-600" />
                   </CardDescription>
                 </CardHeader>
-                <CardContent>{result?.summary.healthy} kcal</CardContent>
+                <CardContent className="text-5xl">
+                  {result?.summary.healthy}{' '}
+                  <span className="text-sm">kcal</span>
+                </CardContent>
               </Card>
             </CarouselItem>
             <CarouselItem>
@@ -112,18 +115,41 @@ export function Summary() {
                     <ArrowCircleDown className="h-8 w-8 fill-destructive" />
                   </CardDescription>
                 </CardHeader>
-                <CardContent>{result?.summary.unhealthy} kcal</CardContent>
+                <CardContent className="text-5xl">
+                  {result?.summary.unhealthy}{' '}
+                  <span className="text-sm">kcal</span>
+                </CardContent>
               </Card>
             </CarouselItem>
             <CarouselItem>
               <Card className="flex flex-col justify-between gap-2">
                 <CardHeader className="flex">
-                  <CardTitle className="text-white">Total</CardTitle>
-                  <CardDescription>
-                    <CurrencyDollar className="h-8 w-8 fill-white" />
-                  </CardDescription>
+                  <CardTitle>Total</CardTitle>
                 </CardHeader>
-                <CardContent className="text-white">0</CardContent>
+                <CardContent>
+                  <ResponsiveContainer width={'100%'} height={110}>
+                    <PieChart style={{ fontSize: 12 }}>
+                      <Pie
+                        data={data}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={50}
+                        innerRadius={35}
+                        strokeWidth={6}
+                      >
+                        {data.map((_, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                            className="stroke-background hover:opacity-80"
+                          />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
               </Card>
             </CarouselItem>
           </CarouselContent>

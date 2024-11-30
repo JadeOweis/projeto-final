@@ -48,10 +48,15 @@ export async function mealsRoutes(app: FastifyInstance) {
 
     const summary = {
       healthy: meals
-        .filter((meal) => meal.meal_type === 'healthy')
+        .filter(
+          (meal) => meal.meal_type === 'healthy' && !meal.isExcludedFromBalance,
+        )
         .reduce((acc, meal) => acc + meal.amount, 0),
       unhealthy: meals
-        .filter((meal) => meal.meal_type === 'unhealthy')
+        .filter(
+          (meal) =>
+            meal.meal_type === 'unhealthy' && !meal.isExcludedFromBalance,
+        )
         .reduce((acc, meal) => acc + meal.amount, 0),
     }
 
@@ -93,4 +98,43 @@ export async function mealsRoutes(app: FastifyInstance) {
 
     return { details }
   })
+
+  app.patch(
+    '/:id/exclude',
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        await request.jwtVerify()
+      } catch (err) {
+        return reply.status(401).send()
+      }
+
+      const getMealParamsSchema = z.object({
+        id: z.string().uuid(),
+      })
+
+      const { id } = getMealParamsSchema.parse(request.params)
+      const meal = await prisma.meal.findUnique({
+        where: { id, user_id: request.user.sub },
+      })
+      const user = await prisma.user.findUnique({
+        where: { id: request.user.sub },
+        select: { id: true, name: true, email: true },
+      })
+
+      if (!meal || !user) {
+        return reply.status(404).send()
+      }
+
+      try {
+        await prisma.meal.update({
+          where: { id },
+          data: { isExcludedFromBalance: !meal.isExcludedFromBalance },
+        })
+
+        return reply.status(200).send()
+      } catch (err) {
+        return reply.status(400).send({ error: 'Failed to update meal' })
+      }
+    },
+  )
 }

@@ -8,6 +8,7 @@ export interface GetMealsResponse {
     meal_type: 'healthy' | 'unhealthy'
     created_at: string
     user_id: string
+    isExcludedFromBalance: boolean
   }[]
   summary: {
     healthy: number
@@ -21,6 +22,6 @@ export async function getMeals(): Promise<GetMealsResponse> {
 
     return response.data
   } catch {
-    return { meals: [] }
+    return { meals: [], summary: { healthy: 0, unhealthy: 0 } }
   }
 }

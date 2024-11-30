@@ -1,11 +1,14 @@
-import { MagnifyingGlass } from '@phosphor-icons/react'
+import { MagnifyingGlass, Trash } from '@phosphor-icons/react'
 import { Dialog, DialogTrigger } from '@radix-ui/react-dialog'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
+import { excludeMeal } from '@/api/exclude-meal'
 import { getMeals } from '@/api/get-meals'
+import { queryClient } from '@/lib/react-query'
 
 import { MealDetails } from './meal-details'
 import { Button } from './ui/button'
@@ -27,6 +30,21 @@ export function MealsTable() {
     queryFn: getMeals,
   })
 
+  const { mutateAsync: excludeFromBalance } = useMutation({
+    mutationFn: excludeMeal,
+    onSuccess: () => {
+      toast.success('Refeição retirada do resumo com sucesso!')
+      queryClient.invalidateQueries({ queryKey: ['meals'] })
+    },
+    onError: () => {
+      toast.error('Ocorreu um problema inesperado. Tente novamente mais tarde.')
+    },
+  })
+
+  async function handleDeleteFromSummary(mealId: string) {
+    await excludeFromBalance({ mealId })
+  }
+
   return (
     <Table>
       <TableCaption>Lista de suas refeições recentes</TableCaption>
@@ -42,25 +60,33 @@ export function MealsTable() {
       <TableBody>
         {result &&
           result.meals.map((meal) => {
+            const isInSummary = meal.isExcludedFromBalance
+
             return (
               <TableRow key={meal.id}>
-                <TableCell className="font-medium capitalize">
+                <TableCell
+                  className={`font-medium capitalize ${isInSummary && 'text-muted-foreground line-through'}`}
+                >
                   {meal.title}
                 </TableCell>
                 <TableCell
                   className={
-                    meal.meal_type === 'healthy'
-                      ? 'text-success'
-                      : 'text-destructive'
+                    isInSummary
+                      ? 'text-muted-foreground line-through'
+                      : meal.meal_type === 'healthy'
+                        ? 'text-success'
+                        : 'text-destructive'
                   }
                 >
                   {meal.amount} kcal
                 </TableCell>
                 <TableCell
                   className={
-                    meal.meal_type === 'healthy'
-                      ? 'text-success'
-                      : 'text-destructive'
+                    isInSummary
+                      ? 'text-muted-foreground line-through'
+                      : meal.meal_type === 'healthy'
+                        ? 'text-success'
+                        : 'text-destructive'
                   }
                 >
                   {meal.meal_type === 'healthy' ? 'Saudável' : 'Não Saudável'}
@@ -86,6 +112,16 @@ export function MealsTable() {
 
                     <MealDetails mealId={meal.id} open={isDetailsOpen} />
                   </Dialog>
+
+                  <Button
+                    variant={'outline'}
+                    size={'sm'}
+                    className="lg:flex lg:items-center lg:justify-center lg:gap-1"
+                    onClick={() => handleDeleteFromSummary(meal.id)}
+                  >
+                    <Trash className="h-3 w-3 md:h-4 md:w-4" />
+                    <span className="hidden lg:flex">Excluir</span>
+                  </Button>
                 </TableCell>
               </TableRow>
             )
